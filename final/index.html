@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>STKI Engine Lab — Build Your Search Engine</title>
+<style>
+:root{
+  --navy:#10233e; --navy2:#183a63; --gold:#d6a84b; --cream:#f7f4ec;
+  --paper:#fffdf8; --ink:#1e293b; --muted:#667085; --line:#d8dde5;
+  --green:#16794a; --red:#b42318; --amber:#b76e00; --blue:#245ea8;
+  --shadow:0 12px 32px rgba(16,35,62,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--cream);color:var(--ink)}
+button,input,select,textarea{font:inherit}
+a{color:var(--blue)}
+header.hero{
+  background:linear-gradient(135deg,var(--navy),#214f7d 70%,#2e668e);
+  color:white;padding:42px 28px 34px;position:relative;overflow:hidden
+}
+.hero:after{content:"";position:absolute;width:360px;height:360px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:-100px;top:-160px}
+.hero-inner{max-width:1440px;margin:auto;position:relative;z-index:1}
+.kicker{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:#f4d892;font-weight:800}
+h1{font-size:clamp(2rem,4.2vw,4.25rem);line-height:1.02;margin:.45rem 0 .7rem}
+.hero p{max-width:900px;font-size:1.05rem;color:#e9eef5;line-height:1.6;margin:0}
+.tagline{margin-top:18px;display:inline-flex;gap:10px;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:10px 14px;border-radius:999px;font-weight:700}
+.timeline{max-width:1440px;margin:-1px auto 0;padding:16px 24px;display:flex;gap:8px;overflow-x:auto;background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.timeline a{white-space:nowrap;text-decoration:none;color:var(--navy);font-size:.82rem;font-weight:800;padding:8px 10px;border-radius:10px}
+.timeline a:hover{background:#eef3f9}
+main{max-width:1440px;margin:0 auto;padding:24px}
+.shell{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(380px,.9fr);gap:20px;align-items:start}
+.builder{min-width:0}
+.live{position:sticky;top:70px;min-width:0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden}
+.card .hd{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.card .bd{padding:20px}
+.badge{display:inline-block;background:#edf3fa;color:var(--navy2);font-size:.73rem;font-weight:900;border-radius:999px;padding:6px 9px;letter-spacing:.04em}
+.step-title{font-size:1.2rem;font-weight:900;color:var(--navy);margin:6px 0 2px}
+.step-sub{color:var(--muted);font-size:.9rem;line-height:1.45}
+.choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.choice{border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px;cursor:pointer;transition:.15s;min-height:115px;text-align:left}
+.choice:hover{transform:translateY(-1px);border-color:#9ab2ca}
+.choice.active{border:2px solid var(--navy2);background:#eef4fa;padding:12px}
+.choice b{display:block;color:var(--navy);margin-bottom:5px}
+.choice small{display:block;color:var(--muted);line-height:1.35}
+.gain,.risk{font-size:.75rem;margin-top:8px;padding:7px 8px;border-radius:8px}
+.gain{background:#eef8f2;color:var(--green)}
+.risk{background:#fff3e8;color:#8c4a00}
+.explain{margin-top:14px;border-left:4px solid var(--gold);background:#fff9e8;padding:13px 14px;border-radius:0 12px 12px 0;line-height:1.55}
+.explain b{color:var(--navy)}
+.formula{font-family:"Cambria Math",Georgia,serif;background:#f3f6fa;border:1px solid #d6e0ea;padding:12px 14px;border-radius:12px;margin:10px 0;font-size:1.02rem;overflow-x:auto}
+details{border:1px solid var(--line);border-radius:12px;background:#fff;margin-top:12px}
+summary{cursor:pointer;padding:12px 14px;font-weight:850;color:var(--navy)}
+details .detail-body{padding:0 14px 14px;color:#39465a;line-height:1.55}
+.toggle-row{display:flex;flex-wrap:wrap;gap:9px}
+.toggle{border:1px solid var(--line);padding:9px 12px;border-radius:999px;background:white;cursor:pointer;font-weight:800;color:var(--navy)}
+.toggle.on{background:var(--navy);color:white;border-color:var(--navy)}
+.checkpoint{background:#edf6ff;border:1px dashed #88a8c6;border-radius:14px;padding:14px;line-height:1.55}
+.live-card{background:white;border:1px solid #cdd7e2;border-radius:18px;box-shadow:0 18px 48px rgba(16,35,62,.14);overflow:hidden}
+.engine-top{background:var(--navy);color:white;padding:16px 18px;display:flex;justify-content:space-between;align-items:center}
+.engine-name{font-weight:950;letter-spacing:.02em}
+.dna-mini{font-size:.72rem;color:#d9e5f1}
+.search-area{padding:16px;border-bottom:1px solid var(--line)}
+.search-row{display:flex;gap:8px}
+.search-row input{flex:1;border:1px solid #aab8c5;border-radius:12px;padding:12px 13px;background:#fff}
+.primary{border:none;background:var(--gold);color:#1c2430;padding:11px 16px;border-radius:12px;font-weight:950;cursor:pointer}
+.secondary{border:1px solid var(--navy2);background:white;color:var(--navy2);padding:10px 13px;border-radius:12px;font-weight:900;cursor:pointer}
+.live-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{background:#f1f4f8;color:#445266;border-radius:999px;padding:5px 8px;font-size:.72rem;font-weight:800}
+.results{padding:12px 16px 16px;max-height:520px;overflow:auto}
+.result{border-bottom:1px solid #e8edf2;padding:13px 0}
+.result:last-child{border-bottom:none}
+.rank{display:inline-flex;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;background:#eef3f8;color:var(--navy);font-weight:950;margin-right:7px}
+.result-title{font-weight:900;color:var(--navy);line-height:1.3}
+.result-meta{font-size:.78rem;color:var(--muted);margin:5px 0}
+.scoreline{display:flex;gap:7px;align-items:center;flex-wrap:wrap;font-size:.76rem}
+.score{background:#eef7ef;color:var(--green);font-weight:900;padding:4px 7px;border-radius:8px}
+.match{background:#edf3ff;color:var(--blue);font-weight:900;padding:4px 7px;border-radius:8px}
+.notmatch{background:#fff1f0;color:var(--red);font-weight:900;padding:4px 7px;border-radius:8px}
+.result-summary{font-size:.83rem;line-height:1.45;color:#465366;margin-top:7px}
+.impact{padding:14px 16px;background:#fbfcfe;border-top:1px solid var(--line);font-size:.82rem;line-height:1.5}
+.impact strong{color:var(--navy)}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.metric{background:#f5f8fb;border:1px solid #dbe4ed;border-radius:12px;padding:10px;text-align:center}
+.metric .v{font-size:1.3rem;font-weight:950;color:var(--navy)}
+.metric .l{font-size:.7rem;color:var(--muted);font-weight:800}
+.table-wrap{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:.82rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+th{background:#f5f7fa;color:var(--navy);position:sticky;top:0}
+.compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.compare-col{border:1px solid var(--line);border-radius:14px;padding:12px;background:white}
+.compare-col h4{margin:0 0 8px;color:var(--navy)}
+.minires{font-size:.79rem;padding:7px 0;border-bottom:1px dashed #e1e6eb}
+.minires:last-child{border-bottom:none}
+.warn{background:#fff3f1;border:1px solid #f2b8b5;color:#8d1f16;border-radius:12px;padding:11px 12px;line-height:1.5}
+.good{background:#eff9f3;border:1px solid #b9dfc6;color:#17653f;border-radius:12px;padding:11px 12px;line-height:1.5}
+.engine-dna{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.dna-item{border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff}
+.dna-item .k{font-size:.7rem;color:var(--muted);font-weight:800;text-transform:uppercase}
+.dna-item .v{font-weight:900;color:var(--navy);margin-top:3px}
+.flow{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.flow span{background:#eef3f8;padding:7px 9px;border-radius:9px;font-weight:800;color:var(--navy)}
+.arrow{color:#8794a4;font-weight:900}
+.footer-note{font-size:.8rem;color:var(--muted);line-height:1.55}
+.range-wrap{display:flex;align-items:center;gap:12px}
+input[type=range]{width:100%}
+@media(max-width:1100px){
+  .shell{grid-template-columns:1fr}
+  .live{position:relative;top:auto}
+}
+@media(max-width:720px){
+  main{padding:12px}
+  .choice-grid,.compare-grid,.engine-dna,.metric-grid{grid-template-columns:1fr}
+  .search-row{flex-direction:column}
+}
+@media print{
+  .timeline,.primary,.secondary,.toggle{display:none!important}
+  .shell{display:block}
+  .live{position:relative;top:auto}
+  body{background:white}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="kicker">NPUS236028 · Sistem Temu Kembali Informasi</div>
+    <h1>STKI ENGINE LAB</h1>
+    <p><strong>Build. Search. Compare. Evaluate. Explain.</strong><br>
+    Bangun satu search engine dari keputusan-keputusan kecil. Setiap keputusan mengubah apa yang bisa ditemukan, bagaimana dokumen diberi skor, apa yang naik ke atas, dan bagaimana hasil dievaluasi.</p>
+    <div class="tagline">🧩 Every retrieval result is shaped by a decision.</div>
+  </div>
+</header>
+
+<nav class="timeline">
+  <a href="#p1">P1 Goal</a><a href="#p2">P2 Fields</a><a href="#p3">P3 Query</a>
+  <a href="#p4">P4 Preprocess</a><a href="#p5">P5–6 Weighting</a><a href="#checkpoint">P7–8 Checkpoint</a>
+  <a href="#p9">P9–10 Vector</a><a href="#p11">P11 Compare</a><a href="#p12">P12 Evaluate</a>
+  <a href="#p13">P13 Semantic/AI</a><a href="#dna">Engine DNA</a>
+</nav>
+
+<main>
+<div class="shell">
+<section class="builder">
+
+<div class="card" id="p1">
+  <div class="hd"><div><span class="badge">PUZZLE 01 · P1</span><div class="step-title">Tentukan tujuan search engine</div><div class="step-sub">Sebelum algoritma, tentukan dulu apa yang dibutuhkan pengguna.</div></div></div>
+  <div class="bd">
+    <div class="explain"><b>Information need:</b> “Saya ingin menemukan sumber tentang bagaimana mahasiswa perguruan tinggi mengevaluasi kredibilitas informasi ketika menggunakan AI generatif.”</div>
+    <p><b>Apa yang lebih penting untuk user ini?</b></p>
+    <div class="choice-grid" id="goalChoices"></div>
+    <details>
+      <summary>Kenapa keputusan P1 penting?</summary>
+      <div class="detail-body">Tujuan pengguna akan menjadi “kompas” saat kita menilai hasil di P12. Engine yang menampilkan sedikit hasil sangat tepat mungkin cocok untuk tugas cepat, tetapi kurang cocok jika pengguna takut melewatkan sumber relevan.</div>
+    </details>
+  </div>
+</div>
+
+<div class="card" id="p2">
+  <div class="hd"><div><span class="badge">PUZZLE 02 · P2</span><div class="step-title">Pilih bagian dokumen yang boleh dicari</div><div class="step-sub">Search engine tidak otomatis “membaca semua”. Ia hanya dapat mencari representasi yang kita beri.</div></div></div>
+  <div class="bd">
+    <div class="choice-grid" id="fieldChoices"></div>
+    <div class="explain" id="fieldExplain"></div>
+    <details>
+      <summary>Konsep: document representation</summary>
+      <div class="detail-body">
+        <div class="formula">Dokumen manusia → { title, author, keywords, abstract/summary, full text, ... }</div>
+        Sistem bekerja pada <b>representasi</b>. Jika sebuah konsep tidak masuk ke field yang diindeks, konsep itu tidak punya kesempatan untuk match secara lexical.
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="card" id="p3">
+  <div class="hd"><div><span class="badge">PUZZLE 03 · P3</span><div class="step-title">Tentukan cara query diperlakukan</div><div class="step-sub">Keyword yang sama bisa memberi kandidat berbeda hanya karena logika query berbeda.</div></div></div>
+  <div class="bd">
+    <div class="choice-grid" id="queryChoices"></div>
+    <div class="explain" id="queryExplain"></div>
+    <details>
+      <summary>Rumus logika sederhana</summary>
+      <div class="detail-body">
+        <div class="formula">AND = P(term₁) ∩ P(term₂) ∩ ...</div>
+        <div class="formula">OR = P(term₁) ∪ P(term₂) ∪ ...</div>
+        <p><b>P(term)</b> adalah posting list: daftar dokumen yang mengandung term tersebut.</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="card" id="p4">
+  <div class="hd"><div><span class="badge">PUZZLE 04 · P4</span><div class="step-title">Bersihkan dan seragamkan teks</div><div class="step-sub">Toggle preprocessing dan lihat bagaimana term yang dipakai engine berubah.</div></div></div>
+  <div class="bd">
+    <div class="toggle-row">
+      <button class="toggle" data-toggle="lowercase">Lowercase</button>
+      <button class="toggle" data-toggle="stopword">Remove stopwords</button>
+      <button class="toggle" data-toggle="stemming">Light stemming</button>
+    </div>
+    <div class="explain" id="preprocessDemo"></div>
+    <details>
+      <summary>Kenapa preprocessing bisa mengubah hasil?</summary>
+      <div class="detail-body">
+        Jika query memakai <code>students</code> tetapi dokumen menyimpan <code>student</code>, stemming ringan dapat membuat keduanya bertemu. Tetapi preprocessing terlalu agresif juga bisa menghapus perbedaan yang sebenarnya penting.
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="card" id="p5">
+  <div class="hd"><div><span class="badge">PUZZLE 05 · P5–P6</span><div class="step-title">Pilih mesin lexical</div><div class="step-sub">Exact condition atau weighted ranking?</div></div></div>
+  <div class="bd">
+    <div class="choice-grid" id="modelChoices"></div>
+    <div class="explain" id="modelExplain"></div>
+    <details open>
+      <summary>Rumus TF, DF, IDF, TF-IDF</summary>
+      <div class="detail-body">
+        <div class="formula">TF(t,d) = frekuensi term t pada dokumen d</div>
+        <div class="formula">DF(t) = jumlah dokumen yang mengandung term t</div>
+        <div class="formula">IDF(t) = log₁₀(N / DF(t))</div>
+        <div class="formula">TF-IDF(t,d) = TF(t,d) × IDF(t)</div>
+        <div class="formula">Score(d,q) = Σ TF-IDF(t,d), untuk term t pada query</div>
+        <div class="warn"><b>Jangan dibaca sebagai persen relevansi.</b> TF-IDF adalah bobot term menurut dokumen dan corpus.</div>
+      </div>
+    </details>
+    <details>
+      <summary>🔧 Open the Hood — perhitungan live untuk rank #1</summary>
+      <div class="detail-body" id="hoodTFIDF"></div>
+    </details>
+  </div>
+</div>
+
+<div class="card" id="checkpoint">
+  <div class="hd"><div><span class="badge">CHECKPOINT · P7–P8</span><div class="step-title">Diagnose the Engine</div><div class="step-sub">Tidak ada komponen baru. Tugasnya: cari penyebab kenapa hasil bisa gagal.</div></div></div>
+  <div class="bd">
+    <div class="checkpoint">
+      Jika dokumen yang relevan tidak muncul, jangan langsung menyalahkan query. Cek berurutan:
+      <div class="flow" style="margin-top:10px">
+        <span>Collection</span><b class="arrow">→</b><span>Fields</span><b class="arrow">→</b><span>Preprocessing</span><b class="arrow">→</b><span>Query logic</span><b class="arrow">→</b><span>Matching/Ranking</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="p9">
+  <div class="hd"><div><span class="badge">PUZZLE 06 · P9–P10</span><div class="step-title">Pasang Vector Similarity Module</div><div class="step-sub">Dokumen dan query dipandang sebagai vector pada vocabulary yang sama.</div></div></div>
+  <div class="bd">
+    <button class="secondary" id="vectorToggle">Aktifkan VSM + Cosine</button>
+    <div class="explain" id="vectorExplain"></div>
+    <details open>
+      <summary>Rumus VSM + Cosine</summary>
+      <div class="detail-body">
+        <div class="formula">D = [TF(t₁,d), TF(t₂,d), ..., TF(tₙ,d)]</div>
+        <div class="formula">Q = [TF(t₁,q), TF(t₂,q), ..., TF(tₙ,q)]</div>
+        <div class="formula">Q·D = Σ qᵢdᵢ</div>
+        <div class="formula">||Q|| = √Σqᵢ² &nbsp;&nbsp; dan &nbsp;&nbsp; ||D|| = √Σdᵢ²</div>
+        <div class="formula">cos(Q,D) = (Q·D) / (||Q|| ||D||)</div>
+        <div class="warn"><b>Cosine 0.80 ≠ 80% relevan.</b> Ia adalah similarity score berdasarkan representasi vector.</div>
+      </div>
+    </details>
+    <details>
+      <summary>🔧 Open the Hood — vector rank #1</summary>
+      <div class="detail-body" id="hoodVSM"></div>
+    </details>
+  </div>
+</div>
+
+<div class="card" id="p11">
+  <div class="hd"><div><span class="badge">BOSS LEVEL · P11</span><div class="step-title">Comparative Retrieval Arena</div><div class="step-sub">Query dan corpus sama. Cara berpikirnya berbeda.</div></div></div>
+  <div class="bd">
+    <div class="compare-grid">
+      <div class="compare-col"><h4>Boolean</h4><div id="compareBoolean"></div></div>
+      <div class="compare-col"><h4>TF-IDF</h4><div id="compareTFIDF"></div></div>
+      <div class="compare-col"><h4>VSM + Cosine</h4><div id="compareVSM"></div></div>
+    </div>
+    <div class="explain" style="margin-top:14px">
+      <b>Boolean:</b> memenuhi kondisi? &nbsp;·&nbsp;
+      <b>TF-IDF:</b> seberapa besar kontribusi term query? &nbsp;·&nbsp;
+      <b>VSM:</b> seberapa mirip pola vector?
+    </div>
+  </div>
+</div>
+
+<div class="card" id="p12">
+  <div class="hd"><div><span class="badge">PUZZLE 07 · P12</span><div class="step-title">Tune Your Results</div><div class="step-sub">Retrieved belum tentu relevant. Atur Top-k dan lihat precision–recall berubah.</div></div></div>
+  <div class="bd">
+    <div class="range-wrap"><b>Top-k</b><input id="topK" type="range" min="1" max="12" value="5"><b id="topKLabel">5</b></div>
+    <div class="metric-grid">
+      <div class="metric"><div class="v" id="mPrecision">–</div><div class="l">Precision</div></div>
+      <div class="metric"><div class="v" id="mRecall">–</div><div class="l">Recall</div></div>
+      <div class="metric"><div class="v" id="mF1">–</div><div class="l">F1</div></div>
+      <div class="metric"><div class="v" id="mTP">–</div><div class="l">TP / FP / FN</div></div>
+    </div>
+    <details open>
+      <summary>Rumus evaluasi</summary>
+      <div class="detail-body">
+        <div class="formula">Precision = TP / (TP + FP)</div>
+        <div class="formula">Recall = TP / (TP + FN)</div>
+        <div class="formula">F1 = 2 × (Precision × Recall) / (Precision + Recall)</div>
+        <div id="goalFeedback" class="good"></div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="card" id="p13">
+  <div class="hd"><div><span class="badge">PUZZLE 08 · P13</span><div class="step-title">Upgrade: Semantic & Generative Retrieval</div><div class="step-sub">Dari kata → makna → jawaban → verifikasi.</div></div></div>
+  <div class="bd">
+    <p><b>Pilih intelligence layer:</b></p>
+    <div class="choice-grid" id="semanticChoices"></div>
+    <div class="explain" id="semanticExplain"></div>
+    <details>
+      <summary>Teaching formula: concept-vector similarity</summary>
+      <div class="detail-body">
+        Web ini memakai <b>concept vector transparan</b> untuk simulasi semantic retrieval:
+        <div class="formula">concept-vector(text) = [student, credibility, AI, literacy, search, evaluation, ...]</div>
+        <div class="formula">SemanticScore(Q,D) = cosine(conceptVector(Q), conceptVector(D))</div>
+        <div class="warn">Ini simulasi pedagogis, bukan embedding model produksi. Tujuannya agar hubungan “kata → konsep → vector → similarity” bisa dibongkar.</div>
+      </div>
+    </details>
+
+    <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+    <p><b>Generative answer:</b></p>
+    <div class="toggle-row">
+      <button class="toggle" id="genToggle">Generate answer</button>
+      <button class="toggle" id="verifyToggle">Claim verification</button>
+      <button class="toggle" id="riskyToggle">Inject risky claim</button>
+    </div>
+    <div id="genBox" style="margin-top:14px"></div>
+  </div>
+</div>
+
+<div class="card" id="dna">
+  <div class="hd"><div><span class="badge">FINAL BUILD</span><div class="step-title">Your Search Engine DNA</div><div class="step-sub">Tidak ada skor “paling benar”. Yang penting: bisakah kamu menjelaskan konsekuensi desainmu?</div></div></div>
+  <div class="bd">
+    <div class="engine-dna" id="dnaGrid"></div>
+    <details open>
+      <summary>Strengths & trade-offs dari konfigurasi ini</summary>
+      <div class="detail-body" id="dnaAnalysis"></div>
+    </details>
+    <div style="margin-top:14px;display:flex;gap:9px;flex-wrap:wrap">
+      <button class="secondary" onclick="window.print()">Print / Save PDF</button>
+      <button class="secondary" id="resetBtn">Reset Engine</button>
+    </div>
+  </div>
+</div>
+
+</section>
+
+<aside class="live">
+  <div class="live-card">
+    <div class="engine-top">
+      <div><div class="engine-name">🔎 My STKI Search Engine</div><div class="dna-mini" id="liveDNA">building...</div></div>
+      <span class="badge" style="background:#fff2c8;color:#6a4a00">LIVE</span>
+    </div>
+    <div class="search-area">
+      <div class="search-row">
+        <input id="queryInput" value="students evaluate credible information generative AI" aria-label="query">
+        <button class="primary" id="searchBtn">SEARCH</button>
+      </div>
+      <div class="live-meta" id="queryMeta"></div>
+    </div>
+    <div class="results" id="results"></div>
+    <div class="impact" id="impactBox"></div>
+  </div>
+</aside>
+</div>
+</main>
+
+<script>
+const corpus = [
+{id:"D01",title:"Enhancing Information Literacy through Generative AI in the Library Classroom",authors:"Wetzel & Kani",year:2024,keywords:["information literacy","generative AI","students","library instruction","source verification"],summary:"Undergraduate students use generative AI in library instruction while learning to verify sources, evaluate AI output, and connect information literacy practices with responsible use.",relevant:true},
+{id:"D02",title:"Articulating Generative AI Information Literacy Competencies",authors:"Khailova et al.",year:2026,keywords:["generative AI","information literacy","competencies","academic libraries","students","credibility"],summary:"A competency model for academic libraries emphasizing critical evaluation of AI-generated information, credibility, verification, and responsible use in higher education.",relevant:true},
+{id:"D03",title:"Integrating Generative AI into Librarian-Led Data Literacy Instruction",authors:"Carroll et al.",year:2026,keywords:["generative AI","data literacy","science students","library instruction"],summary:"Discusses use of generative AI in librarian-led data literacy instruction for science and engineering students, with attention to evaluation and responsible tool use.",relevant:false},
+{id:"D04",title:"Integrating Large Language Models and Generative AI Tools into Information Literacy Instruction",authors:"Carroll & Borycz",year:2024,keywords:["large language models","generative AI","information literacy","students","evaluation"],summary:"Explores how information literacy instruction can incorporate large language models, including critical evaluation of outputs, evidence, and source use.",relevant:true},
+{id:"D05",title:"In Their Words: Student Reflections on Information-Seeking Behaviors",authors:"Dahlen & Hanson",year:2023,keywords:["students","information seeking","search behavior","academic information"],summary:"Student reflections describe where they begin searching, how they judge search results, and how they respond when academic information seeking becomes difficult.",relevant:false},
+{id:"D06",title:"MeSH and Text-Word Search Strategies: Precision, Recall, and Their Implications for Library Instruction",authors:"DeMars & Perruso",year:2022,keywords:["precision","recall","search strategies","library instruction","information retrieval"],summary:"Compares controlled vocabulary and text-word searching using precision and recall, showing how search strategy influences retrieval quality.",relevant:false},
+{id:"D07",title:"Assessing Information, Media and Data Literacy in Academic Libraries",authors:"Pinto et al.",year:2024,keywords:["information literacy","assessment","academic libraries","students","evaluation"],summary:"Reviews approaches for assessing information, media, and data literacy in academic libraries, including student evaluation skills and measurement challenges.",relevant:false},
+{id:"D08",title:"Generative Artificial Intelligence: 8 Critical Questions for Libraries",authors:"Bridges et al.",year:2024,keywords:["generative AI","libraries","ethics","critical questions","information"],summary:"Discusses critical questions libraries should ask about generative AI, including trust, transparency, evidence, responsibility, and service implications.",relevant:false},
+{id:"D09",title:"Where Students Start and What They Do When They Get Stuck",authors:"Thomas et al.",year:2017,keywords:["students","information seeking","help seeking","search difficulty","academic search"],summary:"Examines how students begin academic searching, what they do when searches fail, whom they ask for help, and how they reformulate searches.",relevant:false},
+{id:"D10",title:"Perilaku Mahasiswa dalam Temu Kembali Informasi di Perpustakaan",authors:"Kapitan & Hanum",year:2019,keywords:["mahasiswa","temu kembali informasi","perpustakaan","perilaku pencarian"],summary:"Membahas perilaku mahasiswa dalam melakukan temu kembali informasi di perpustakaan dan strategi yang digunakan selama pencarian.",relevant:false},
+{id:"D11",title:"The AI Literacy Heptagon: A Structured Approach to AI Literacy in Higher Education",authors:"Hackl et al.",year:2026,keywords:["AI literacy","higher education","students","critical evaluation","skills"],summary:"Proposes a structured AI literacy model for higher education, including critical evaluation, understanding AI limits, and responsible student use.",relevant:false},
+{id:"D12",title:"Shifting Understandings of Information Literacy in the Age of Generative AI",authors:"Oddone et al.",year:2026,keywords:["information literacy","generative AI","LIS students","credibility","source evaluation"],summary:"LIS students reflect on information literacy in the age of generative AI, with emphasis on evaluating credibility, verifying sources, and understanding AI-supported information practices.",relevant:true}
+];
+
+const stopwords = new Set(["the","a","an","and","or","of","to","in","on","for","with","when","how","whether","are","is","be","by","through","into","from","yang","dan","di","ke","dari","untuk","dengan","pada","bagaimana","apakah"]);
+const stemMap = {
+ "students":"student","learners":"student","undergraduate":"student","mahasiswa":"student",
+ "libraries":"library","sources":"source","strategies":"strategy","searching":"search","searches":"search",
+ "behaviors":"behavior","behaviours":"behavior","responses":"response","tools":"tool","models":"model",
+ "competencies":"competency","evaluation":"evaluate","evaluating":"evaluate","evaluates":"evaluate",
+ "assessment":"assess","assessing":"assess","credibility":"credible","trustworthy":"credible","trusted":"credible",
+ "verification":"verify","verifying":"verify","verified":"verify","literacies":"literacy","skills":"skill",
+ "practices":"practice","mencari":"cari","pencarian":"cari","menilai":"nilai","mengevaluasi":"evaluasi"
+};
+const concepts = {
+ student:["student","students","learners","undergraduate","mahasiswa","lis"],
+ credibility:["credible","credibility","trustworthy","trust","authority","reliable","verification","verify","source evaluation"],
+ ai:["ai","generative","chatgpt","large language model","llm"],
+ literacy:["literacy","information literacy","ai literacy","data literacy","media literacy"],
+ search:["search","searching","information seeking","retrieval","query","cari","pencarian","temu kembali"],
+ evaluation:["evaluate","evaluation","assess","assessment","critical","judge","verification","verify"],
+ library:["library","libraries","perpustakaan","librarian"],
+ help:["help","help seeking","assistance","stuck"],
+ metrics:["precision","recall","f1","evaluation metric"]
+};
+
+const defaults = {
+ goal:"balanced", fields:"all", queryMode:"keywords",
+ lowercase:true, stopword:true, stemming:true,
+ model:"tfidf", vectorEnabled:true, semantic:"off",
+ topK:5, generate:false, verify:false, risky:false
+};
+let state = JSON.parse(localStorage.getItem("stkiEngineLabState")||"null") || {...defaults};
+
+const goalOptions = [
+ {id:"precision",title:"Targeted Search",desc:"Sedikit hasil, tapi ingin sangat tepat.",gain:"Lebih nyaman untuk tugas cepat.",risk:"Lebih mudah melewatkan sumber relevan."},
+ {id:"balanced",title:"Balanced Search",desc:"Jaga ketepatan dan kelengkapan tetap seimbang.",gain:"Cocok untuk eksplorasi umum.",risk:"Tidak memaksimalkan satu sisi."},
+ {id:"recall",title:"Broad Search",desc:"Takut ada sumber relevan yang terlewat.",gain:"Peluang menemukan lebih banyak sumber relevan.",risk:"Noise lebih mudah ikut masuk."}
+];
+const fieldOptions = [
+ {id:"title",title:"Title only",desc:"Index hanya judul.",gain:"Spesifik dan ringkas.",risk:"Konsep yang hanya ada di keyword/summary hilang."},
+ {id:"title_keywords",title:"Title + Keywords",desc:"Tambahkan istilah terkontrol/keywords.",gain:"Titik akses lebih banyak.",risk:"Masih bisa melewatkan konsep di ringkasan."},
+ {id:"all",title:"Title + Keywords + Summary",desc:"Representasi paling kaya dalam lab.",gain:"Coverage lexical lebih luas.",risk:"Lebih banyak term bisa membawa noise."}
+];
+const queryOptions = [
+ {id:"keywords",title:"Simple keywords",desc:"Term dipakai sebagai sinyal pencarian.",gain:"Fleksibel untuk exploratory search.",risk:"Tidak memaksa semua term hadir."},
+ {id:"and",title:"Boolean AND",desc:"Semua term harus ada.",gain:"Kontrol ketat.",risk:"Satu term hilang → dokumen gugur."},
+ {id:"or",title:"Boolean OR",desc:"Minimal satu term boleh ada.",gain:"Coverage luas.",risk:"Noise mudah meningkat."}
+];
+const modelOptions = [
+ {id:"boolean",title:"Boolean",desc:"Match / tidak match.",gain:"Jelas dan mudah dijelaskan.",risk:"Tidak memberi ranking berbobot."},
+ {id:"tfidf",title:"TF-IDF",desc:"Jumlahkan bobot term query.",gain:"Term khas memberi kontribusi lebih besar.",risk:"Tetap bergantung vocabulary lexical."},
+ {id:"vsm",title:"VSM + Cosine",desc:"Bandingkan raw TF vectors.",gain:"Melihat pola vector secara keseluruhan.",risk:"Similarity tetap bukan relevance."}
+];
+const semanticOptions = [
+ {id:"off",title:"Lexical only",desc:"Gunakan mesin lexical yang sudah dibangun.",gain:"Lebih transparan terhadap term.",risk:"Vocabulary mismatch lebih terasa."},
+ {id:"semantic",title:"Semantic layer",desc:"Rank berdasarkan concept-vector similarity.",gain:"Kata berbeda tetapi konsep dekat bisa naik.",risk:"Context drift: konsep tetangga bisa ikut."},
+ {id:"hybrid",title:"Hybrid",desc:"Gabungkan lexical + semantic.",gain:"Dua jenis sinyal saling melengkapi.",risk:"Lebih kompleks untuk dijelaskan."}
+];
+
+function save(){ localStorage.setItem("stkiEngineLabState",JSON.stringify(state)); }
+function esc(s){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function textForDoc(d){
+  if(state.fields==="title") return d.title;
+  if(state.fields==="title_keywords") return d.title+" "+d.keywords.join(" ");
+  return d.title+" "+d.keywords.join(" ")+" "+d.summary;
+}
+function rawTokens(text){
+  return (text.match(/[A-Za-zÀ-ÿ0-9]+(?:-[A-Za-zÀ-ÿ0-9]+)*/g)||[]);
+}
+function preprocess(text, customState=state){
+  let toks=rawTokens(text);
+  if(customState.lowercase) toks=toks.map(x=>x.toLowerCase());
+  if(customState.stopword) toks=toks.filter(x=>!stopwords.has(x.toLowerCase()));
+  if(customState.stemming) toks=toks.map(x=>stemMap[x.toLowerCase()]||x.toLowerCase());
+  return toks;
+}
+function docsTokens(customState=state){
+  const out={}; corpus.forEach(d=>out[d.id]=preprocess(
+    customState.fields==="title"?d.title:
+    customState.fields==="title_keywords"?d.title+" "+d.keywords.join(" "):
+    d.title+" "+d.keywords.join(" ")+" "+d.summary, customState));
+  return out;
+}
+function vocabulary(customState=state){
+  const dt=docsTokens(customState); return [...new Set(Object.values(dt).flat())].sort();
+}
+function postings(customState=state){
+  const dt=docsTokens(customState), p={};
+  Object.entries(dt).forEach(([id,toks])=>[...new Set(toks)].forEach(t=>{(p[t]??=new Set()).add(id)}));
+  return p;
+}
+function queryTerms(customState=state){
+  return preprocess(document.getElementById("queryInput")?.value || "students evaluate credible information generative AI", customState);
+}
+function candidateIds(customState=state){
+  const qt=[...new Set(queryTerms(customState))], p=postings(customState);
+  if(!qt.length) return [];
+  if(customState.queryMode==="and"){
+    let set=new Set(p[qt[0]]||[]);
+    qt.slice(1).forEach(t=>set=new Set([...set].filter(x=>(p[t]||new Set()).has(x))));
+    return [...set];
+  }
+  if(customState.queryMode==="or"){
+    let set=new Set(); qt.forEach(t=>(p[t]||new Set()).forEach(x=>set.add(x))); return [...set];
+  }
+  return corpus.map(d=>d.id); // keywords mode: score all docs
+}
+function tfidfScores(customState=state){
+  const dt=docsTokens(customState), qt=[...new Set(queryTerms(customState))], N=corpus.length;
+  const df={}; Object.values(dt).forEach(toks=>[...new Set(toks)].forEach(t=>df[t]=(df[t]||0)+1));
+  const scores={}; corpus.forEach(d=>{
+    const counts={}; dt[d.id].forEach(t=>counts[t]=(counts[t]||0)+1);
+    let s=0; qt.forEach(t=>{ const idf=df[t]?Math.log10(N/df[t]):0; s+=(counts[t]||0)*idf; });
+    scores[d.id]=s;
+  });
+  return {scores,df,dt,qt};
+}
+function vectorScores(customState=state){
+  const dt=docsTokens(customState), vocab=vocabulary(customState), qt=queryTerms(customState);
+  const qCount={}; qt.forEach(t=>qCount[t]=(qCount[t]||0)+1);
+  const q=vocab.map(t=>qCount[t]||0);
+  const dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0);
+  const norm=a=>Math.sqrt(a.reduce((s,x)=>s+x*x,0));
+  const scores={}, vectors={};
+  corpus.forEach(d=>{
+    const c={}; dt[d.id].forEach(t=>c[t]=(c[t]||0)+1);
+    const v=vocab.map(t=>c[t]||0); vectors[d.id]=v;
+    const den=norm(q)*norm(v); scores[d.id]=den?dot(q,v)/den:0;
+  });
+  return {scores,vocab,q,vectors,dt,qt,dot,norm};
+}
+function conceptVector(text){
+  const low=text.toLowerCase();
+  return Object.keys(concepts).map(k=>{
+    let v=0; concepts[k].forEach(term=>{ if(low.includes(term.toLowerCase())) v+=1; }); return v;
+  });
+}
+function semanticScores(){
+  const q=conceptVector(document.getElementById("queryInput")?.value || "");
+  const dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0), norm=a=>Math.sqrt(a.reduce((s,x)=>s+x*x,0));
+  const scores={};
+  corpus.forEach(d=>{
+    const v=conceptVector(d.title+" "+d.keywords.join(" ")+" "+d.summary);
+    const den=norm(q)*norm(v); scores[d.id]=den?dot(q,v)/den:0;
+  });
+  return scores;
+}
+function lexicalBase(customState=state){
+  if(customState.model==="boolean"){
+    const cand=new Set(candidateIds(customState)); const s={}; corpus.forEach(d=>s[d.id]=cand.has(d.id)?1:0); return s;
+  }
+  if(customState.model==="vsm" || customState.vectorEnabled) return customState.model==="vsm"?vectorScores(customState).scores:tfidfScores(customState).scores;
+  return tfidfScores(customState).scores;
+}
+function normalizeScores(scores){
+  const vals=Object.values(scores), max=Math.max(...vals,0), min=Math.min(...vals,0);
+  const out={}; Object.keys(scores).forEach(k=>out[k]=max===min?(max?1:0):(scores[k]-min)/(max-min)); return out;
+}
+function finalScores(customState=state){
+  const lex=lexicalBase(customState), sem=semanticScores(), out={};
+  if(customState.semantic==="off") return lex;
+  if(customState.semantic==="semantic") return sem;
+  const L=normalizeScores(lex), S=normalizeScores(sem);
+  corpus.forEach(d=>out[d.id]=.55*(L[d.id]||0)+.45*(S[d.id]||0));
+  return out;
+}
+function ranked(customState=state){
+  const scores=finalScores(customState), cand=new Set(candidateIds(customState));
+  let arr=corpus.map(d=>({...d,score:scores[d.id]||0,matched:cand.has(d.id)}));
+  if(customState.queryMode!=="keywords") arr=arr.filter(x=>x.matched);
+  if(customState.model==="boolean" && customState.semantic==="off") return arr.sort((a,b)=>a.id.localeCompare(b.id));
+  return arr.sort((a,b)=>b.score-a.score || a.id.localeCompare(b.id));
+}
+function optionHTML(o,active){
+  return `<button class="choice ${active===o.id?"active":""}" data-id="${o.id}">
+    <b>${esc(o.title)}</b><small>${esc(o.desc)}</small>
+    <div class="gain">+ ${esc(o.gain)}</div><div class="risk">△ ${esc(o.risk)}</div></button>`;
+}
+function bindChoices(containerId, options, stateKey, onChange){
+  const el=document.getElementById(containerId); el.innerHTML=options.map(o=>optionHTML(o,state[stateKey])).join("");
+  el.querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>{state[stateKey]=btn.dataset.id; if(stateKey==="goal"){state.topK=state.goal==="precision"?3:state.goal==="recall"?8:5; document.getElementById("topK").value=state.topK;} save(); renderAll(); if(onChange) onChange();});
+}
+function explainTexts(){
+  const f={title:"Kamu hanya memberi engine judul. Ini sangat spesifik, tetapi konsep yang hanya muncul di keyword/summary tidak akan punya term untuk dicocokkan.",title_keywords:"Keyword menambah titik akses. Dokumen dengan judul yang tidak eksplisit masih bisa ditemukan lewat istilah topik.",all:"Engine melihat judul, keywords, dan summary. Coverage lexical meningkat, tetapi ruang term lebih besar juga bisa membawa noise."};
+  const q={keywords:"Simple keywords tidak memaksa semua term hadir. Semua dokumen boleh mendapat skor, lalu ranking menentukan urutannya.",and:"AND mengambil irisan posting list. Satu term wajib tidak ada → dokumen gugur, walau term lain sangat kuat.",or:"OR mengambil gabungan posting list. Coverage naik, tetapi dokumen dengan hanya satu term juga boleh masuk."};
+  const m={boolean:"Boolean menjawab kondisi: match atau tidak match. Ia kuat untuk kontrol, tetapi tidak memberi bobot ranking.",tfidf:"TF-IDF menjumlahkan kontribusi term query berdasarkan frekuensi di dokumen dan kelangkaannya di corpus.",vsm:"VSM + cosine membandingkan pola raw-TF vector query dan dokumen. Similarity score tetap bukan relevance judgment."};
+  const s={off:"Engine hanya memakai sinyal lexical. Kelebihannya transparan terhadap term; kelemahannya vocabulary mismatch tetap kuat.",semantic:"Engine memakai concept-vector similarity. Kata berbeda tetapi konsep dekat dapat naik, namun konsep tetangga yang salah konteks juga bisa ikut.",hybrid:"Engine menggabungkan lexical dan semantic signal. Ini sering lebih fleksibel, tetapi keputusan ranking jadi lebih kompleks untuk dijelaskan."};
+  document.getElementById("fieldExplain").innerHTML="<b>Konsekuensi:</b> "+f[state.fields];
+  document.getElementById("queryExplain").innerHTML="<b>Konsekuensi:</b> "+q[state.queryMode];
+  document.getElementById("modelExplain").innerHTML="<b>Konsekuensi:</b> "+m[state.model];
+  document.getElementById("semanticExplain").innerHTML="<b>Konsekuensi:</b> "+s[state.semantic];
+}
+function renderToggles(){
+  document.querySelectorAll("[data-toggle]").forEach(btn=>btn.classList.toggle("on",!!state[btn.dataset.toggle]));
+  const demo="Mahasiswa menggunakan AI untuk mencari sumber informasi.";
+  const stages=[];
+  let toks=rawTokens(demo); stages.push(`<b>Original:</b> ${esc(demo)}`);
+  if(state.lowercase){toks=toks.map(x=>x.toLowerCase()); stages.push(`<b>Lowercase:</b> ${esc(toks.join(" | "))}`);}
+  if(state.stopword){toks=toks.filter(x=>!stopwords.has(x.toLowerCase())); stages.push(`<b>Stopword removed:</b> ${esc(toks.join(" | "))}`);}
+  if(state.stemming){toks=toks.map(x=>stemMap[x.toLowerCase()]||x.toLowerCase()); stages.push(`<b>Stemmed:</b> ${esc(toks.join(" | "))}`);}
+  document.getElementById("preprocessDemo").innerHTML=stages.join("<br>");
+}
+function renderResults(){
+  const arr=ranked(), top=arr.slice(0,state.topK), qts=queryTerms();
+  document.getElementById("results").innerHTML = top.length?top.map((d,i)=>`
+    <div class="result">
+      <div><span class="rank">${i+1}</span><span class="result-title">${esc(d.title)}</span></div>
+      <div class="result-meta">${d.id} · ${esc(d.authors)} · ${d.year}</div>
+      <div class="scoreline">
+        ${state.model==="boolean"&&state.semantic==="off"?(d.matched?'<span class="match">MATCH</span>':'<span class="notmatch">NO MATCH</span>'):`<span class="score">score ${d.score.toFixed(4)}</span>`}
+        ${d.relevant?'<span class="match">class relevance: relevant</span>':''}
+      </div>
+      <div class="result-summary">${esc(d.summary)}</div>
+    </div>`).join(""):'<div class="warn">Tidak ada hasil pada konfigurasi/query ini.</div>';
+  document.getElementById("queryMeta").innerHTML=[
+    `terms: ${qts.join(", ")||"—"}`,`fields: ${state.fields}`,`logic: ${state.queryMode}`,`model: ${state.model}`,`semantic: ${state.semantic}`
+  ].map(x=>`<span class="pill">${esc(x)}</span>`).join("");
+  document.getElementById("liveDNA").textContent=`${state.fields} · ${state.model} · ${state.semantic}`;
+  const candidateCount=candidateIds().length;
+  document.getElementById("impactBox").innerHTML=`<strong>Live consequence:</strong> ${candidateCount} kandidat melewati query logic; ${arr.length} dokumen masuk ranking; yang ditampilkan Top-${state.topK}.`;
+}
+function renderHoods(){
+  const tf=tfidfScores(), arr=ranked();
+  const top=arr[0];
+  if(!top){document.getElementById("hoodTFIDF").innerHTML="Tidak ada hasil.";document.getElementById("hoodVSM").innerHTML="Tidak ada hasil.";return;}
+  const counts={}; (tf.dt[top.id]||[]).forEach(t=>counts[t]=(counts[t]||0)+1);
+  const rows=tf.qt.map(t=>{const TF=counts[t]||0, DF=tf.df[t]||0, IDF=DF?Math.log10(corpus.length/DF):0; return `<tr><td>${esc(t)}</td><td>${TF}</td><td>${DF}</td><td>${IDF.toFixed(4)}</td><td>${(TF*IDF).toFixed(4)}</td></tr>`}).join("");
+  document.getElementById("hoodTFIDF").innerHTML=`<p><b>Contoh dokumen:</b> ${top.id} — ${esc(top.title)}</p><div class="table-wrap"><table><thead><tr><th>Term</th><th>TF</th><th>DF</th><th>IDF</th><th>TF×IDF</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  const vs=vectorScores(), v=vs.vectors[top.id], q=vs.q, dot=vs.dot(q,v), nq=vs.norm(q), nd=vs.norm(v), cos=(nq*nd)?dot/(nq*nd):0;
+  const active=vs.vocab.map((t,i)=>({t,q:q[i],d:v[i]})).filter(x=>x.q||x.d).slice(0,24);
+  document.getElementById("hoodVSM").innerHTML=`<p><b>Contoh dokumen:</b> ${top.id}</p>
+  <div class="formula">Q·D = ${dot.toFixed(4)}</div><div class="formula">||Q|| = ${nq.toFixed(4)} &nbsp; · &nbsp; ||D|| = ${nd.toFixed(4)}</div>
+  <div class="formula">cos(Q,D) = ${cos.toFixed(4)}</div>
+  <div class="table-wrap"><table><thead><tr><th>Term</th><th>Q</th><th>D</th></tr></thead><tbody>${active.map(x=>`<tr><td>${esc(x.t)}</td><td>${x.q}</td><td>${x.d}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function compareModel(customModel){
+  const cs={...state,model:customModel,semantic:"off",queryMode:state.queryMode};
+  if(customModel==="vsm") cs.vectorEnabled=true;
+  const arr=ranked(cs).slice(0,5);
+  return arr.map((d,i)=>`<div class="minires"><b>${i+1}. ${d.id}</b> — ${customModel==="boolean"?"match":d.score.toFixed(4)}<br>${esc(d.title.slice(0,60))}${d.title.length>60?"…":""}</div>`).join("")||'<div class="minires">No result</div>';
+}
+function renderCompare(){
+  document.getElementById("compareBoolean").innerHTML=compareModel("boolean");
+  document.getElementById("compareTFIDF").innerHTML=compareModel("tfidf");
+  document.getElementById("compareVSM").innerHTML=compareModel("vsm");
+}
+function renderMetrics(){
+  const arr=ranked().slice(0,state.topK);
+  const rel=new Set(corpus.filter(d=>d.relevant).map(d=>d.id));
+  const ret=new Set(arr.map(d=>d.id));
+  const TP=[...ret].filter(x=>rel.has(x)).length, FP=ret.size-TP, FN=[...rel].filter(x=>!ret.has(x)).length;
+  const P=(TP+FP)?TP/(TP+FP):0, R=(TP+FN)?TP/(TP+FN):0, F=(P+R)?2*P*R/(P+R):0;
+  document.getElementById("mPrecision").textContent=P.toFixed(2);
+  document.getElementById("mRecall").textContent=R.toFixed(2);
+  document.getElementById("mF1").textContent=F.toFixed(2);
+  document.getElementById("mTP").textContent=`${TP}/${FP}/${FN}`;
+  document.getElementById("topKLabel").textContent=state.topK;
+  const goalText=state.goal==="precision"?"Di P1 kamu memilih targeted search. Perhatikan apakah precision tetap cukup tinggi pada Top-k ini.":state.goal==="recall"?"Di P1 kamu memilih broad search. Perhatikan apakah recall sudah cukup tinggi atau masih banyak relevant document yang terlewat.":"Di P1 kamu memilih balanced search. Perhatikan trade-off precision dan recall, bukan hanya satu angka.";
+  document.getElementById("goalFeedback").innerHTML="<b>Kembali ke keputusan P1:</b> "+goalText;
+}
+function renderVector(){
+  const btn=document.getElementById("vectorToggle");
+  btn.textContent=state.vectorEnabled?"VSM + Cosine aktif ✓":"Aktifkan VSM + Cosine";
+  document.getElementById("vectorExplain").innerHTML=state.vectorEnabled?"<b>Vector module terpasang.</b> Query dan dokumen sekarang bisa dibandingkan sebagai raw-TF vectors pada vocabulary yang sama.":"<b>Belum aktif.</b> Engine masih mengandalkan model lexical yang dipilih sebelumnya.";
+}
+function renderGen(){
+  document.getElementById("genToggle").classList.toggle("on",state.generate);
+  document.getElementById("verifyToggle").classList.toggle("on",state.verify);
+  document.getElementById("riskyToggle").classList.toggle("on",state.risky);
+  const box=document.getElementById("genBox");
+  if(!state.generate){box.innerHTML='<div class="explain"><b>Retrieval only.</b> Engine berhenti pada daftar dokumen. Tidak ada jawaban sintetis.</div>';return;}
+  const top=ranked().slice(0,3);
+  const cites=top.map(d=>d.id);
+  let claims=[
+    {text:"Mahasiswa perlu memeriksa kredibilitas dan bukti sebelum menerima informasi dari sistem generatif.",support:cites.filter(id=>["D01","D02","D04","D12"].includes(id))},
+    {text:"Verifikasi sumber membantu membedakan jawaban yang terdengar meyakinkan dari jawaban yang benar-benar didukung evidence.",support:cites.filter(id=>["D01","D02","D04","D12","D08"].includes(id))}
+  ];
+  if(state.risky) claims.push({text:"Penggunaan generative AI meningkatkan akurasi evaluasi sumber mahasiswa sebesar 40%.",support:[]});
+  box.innerHTML=`<div class="good"><b>Generated answer</b><br>${claims.map((c,i)=>`${esc(c.text)} [${cites[Math.min(i,cites.length-1)]||"—"}]`).join(" ")}</div>`+
+  (state.verify?`<div style="margin-top:10px">${claims.map(c=>`<div class="${c.support.length?"good":"warn"}" style="margin-top:7px"><b>${c.support.length?"SUPPORTED":"UNSUPPORTED"}</b> — ${esc(c.text)}<br><small>${c.support.length?"Evidence: "+c.support.join(", "):"Tidak ada evidence di retrieved set yang mendukung claim ini."}</small></div>`).join("")}</div>`:
+  '<div class="warn" style="margin-top:10px">Claim verification OFF. Citation tampil, tetapi dukungan claim belum diperiksa.</div>');
+}
+function renderDNA(){
+  const items=[
+    ["Search goal",state.goal],["Searchable fields",state.fields],["Query logic",state.queryMode],
+    ["Preprocessing",`${state.lowercase?"lowercase ":""}${state.stopword?"stopword ":""}${state.stemming?"stemming":""}`||"minimal"],
+    ["Lexical model",state.model],["Vector module",state.vectorEnabled?"enabled":"off"],
+    ["Top-k",state.topK],["Semantic layer",state.semantic],
+    ["Generative answer",state.generate?"enabled":"off"],["Claim verification",state.verify?"enabled":"off"]
+  ];
+  document.getElementById("dnaGrid").innerHTML=items.map(([k,v])=>`<div class="dna-item"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`).join("");
+  const strengths=[], trade=[];
+  if(state.fields==="all") {strengths.push("Representasi kaya memberi lebih banyak titik akses."); trade.push("Lebih banyak term dapat menambah noise.");}
+  if(state.fields==="title"){strengths.push("Representasi sangat spesifik.");trade.push("Konsep di keyword/summary mudah terlewat.");}
+  if(state.queryMode==="and"){strengths.push("Kontrol kandidat ketat.");trade.push("Satu term hilang dapat menggugurkan dokumen berguna.");}
+  if(state.model==="tfidf") strengths.push("Term yang relatif khas mendapat kontribusi lebih besar.");
+  if(state.model==="vsm") strengths.push("Ranking mempertimbangkan pola vector.");
+  if(state.semantic==="semantic"||state.semantic==="hybrid"){strengths.push("Vocabulary mismatch lebih mudah ditangani.");trade.push("Konsep tetangga dapat ikut naik walau konteks berbeda.");}
+  if(state.generate){strengths.push("User menerima jawaban sintetis, bukan hanya daftar dokumen.");trade.push("Generation menambah risiko overclaim/unsupported claim.");}
+  if(state.verify) strengths.push("Claim dapat ditelusuri ke evidence.");
+  document.getElementById("dnaAnalysis").innerHTML=`<b>Strengths</b><ul>${strengths.map(x=>`<li>${esc(x)}</li>`).join("")||"<li>Konfigurasi masih minimal.</li>"}</ul><b>Trade-offs</b><ul>${trade.map(x=>`<li>${esc(x)}</li>`).join("")||"<li>Setiap desain tetap perlu diuji pada information need nyata.</li>"}</ul>`;
+}
+function renderAll(){
+  bindChoices("goalChoices",goalOptions,"goal");
+  bindChoices("fieldChoices",fieldOptions,"fields");
+  bindChoices("queryChoices",queryOptions,"queryMode");
+  bindChoices("modelChoices",modelOptions,"model");
+  bindChoices("semanticChoices",semanticOptions,"semantic");
+  renderToggles(); explainTexts(); renderVector(); renderResults(); renderHoods(); renderCompare(); renderMetrics(); renderGen(); renderDNA();
+  save();
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-toggle]"); if(t){const k=t.dataset.toggle; state[k]=!state[k]; save(); renderAll();}
+});
+document.getElementById("vectorToggle").onclick=()=>{state.vectorEnabled=!state.vectorEnabled;if(state.vectorEnabled)state.model="vsm";save();renderAll();};
+document.getElementById("searchBtn").onclick=()=>renderAll();
+document.getElementById("queryInput").addEventListener("keydown",e=>{if(e.key==="Enter")renderAll();});
+document.getElementById("topK").oninput=e=>{state.topK=+e.target.value;save();renderAll();};
+document.getElementById("genToggle").onclick=()=>{state.generate=!state.generate;save();renderAll();};
+document.getElementById("verifyToggle").onclick=()=>{state.verify=!state.verify;save();renderAll();};
+document.getElementById("riskyToggle").onclick=()=>{state.risky=!state.risky;save();renderAll();};
+document.getElementById("resetBtn").onclick=()=>{state={...defaults};localStorage.removeItem("stkiEngineLabState");document.getElementById("queryInput").value="students evaluate credible information generative AI";renderAll();};
+renderAll();
+</script>
+</body>
+</html>
