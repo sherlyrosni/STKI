@@ -1,0 +1,235 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>STKI Semantic & AI Retrieval Lab — P13</title><meta name="description" content="Laboratorium interaktif P13 untuk membandingkan lexical retrieval, semantic retrieval, dan grounded generative answers."><style>
+:root{
+  --bg:#f7f8fa;--card:#fff;--ink:#172b3f;--muted:#66717d;--line:#dfe5ea;
+  --navy:#20497c;--navy2:#173b60;--orange:#f47b20;--gold:#e3b64f;--green:#2f7d5d;
+  --red:#b24845;--purple:#6d55a3;--soft:#eef3f7;--yellow:#fff6db;--shadow:0 12px 34px rgba(26,38,51,.08)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);line-height:1.55}
+a{color:inherit}button,input,textarea,select{font:inherit}button{cursor:pointer}.container{width:min(1180px,92vw);margin:auto}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(247,248,250,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.nav{min-height:66px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:850;display:flex;align-items:center;gap:10px}.badge{width:34px;height:34px;border-radius:10px;background:var(--orange);display:grid;place-items:center;color:white;font-weight:900}.navlinks{display:flex;gap:16px;color:var(--muted);font-size:.9rem}.navlinks a{text-decoration:none}
+.hero{padding:72px 0 46px}.hero-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:30px;align-items:center}.kicker{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-weight:850;color:#9a520f}h1{font-size:clamp(2.6rem,6vw,5rem);line-height:.98;letter-spacing:-.045em;margin:.18em 0 .3em}.hero p{color:var(--muted);font-size:1.1rem;max-width:760px}.hero-card,.card,.lab,.worksheet,.reference-card{background:white;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.hero-card{padding:22px}.bigq{font-size:1.35rem;font-weight:800;line-height:1.35}.note{padding:13px 15px;border:1px solid #f0d894;background:var(--yellow);border-radius:12px;color:#654b13}.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{border:1px solid var(--ink);background:var(--ink);color:white;padding:10px 15px;border-radius:10px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:7px}.btn.orange{background:var(--orange);border-color:var(--orange)}.btn.secondary{background:white;color:var(--ink);border-color:var(--line)}.btn.small{padding:7px 9px;font-size:.8rem}.section{padding:36px 0 54px}.section h2{font-size:clamp(1.8rem,3vw,2.65rem);letter-spacing:-.03em;margin:0}.section-intro{color:var(--muted);max-width:800px;margin:.4rem 0 1.2rem}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card{padding:20px}.card h3{margin:.3rem 0 .4rem}.tag{display:inline-flex;padding:4px 9px;border-radius:999px;background:#eef1f4;font-size:.77rem;font-weight:750;margin:3px}.tag.lex{background:#eaf1f9;color:#20497c}.tag.sem{background:#f0ebfa;color:#5a428d}.tag.gen{background:#fff0e5;color:#a64d11}.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:850}.concept-q{font-size:1.05rem;font-weight:800}.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0}.flowbox{padding:10px 13px;border-radius:11px;background:white;border:1px solid var(--line);font-weight:800}.arrow{font-weight:900;color:var(--orange)}
+.lab{padding:24px;background:#101923;color:white}.lab .muted{color:#bac5d0}.searchrow{display:grid;grid-template-columns:1fr 165px;gap:10px;margin:15px 0}.searchrow input{padding:13px;border-radius:11px;border:1px solid #42505e;background:#17232f;color:white}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid #4d5b67;background:#182633;color:#e7edf3;border-radius:999px;padding:6px 10px;font-size:.8rem}.chip:hover{border-color:var(--orange);color:#ffb078}.process{margin-top:15px;padding:14px;border:1px solid #30404e;border-radius:13px;background:#17232f}.results{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.method{background:white;color:var(--ink);border-radius:17px;overflow:hidden}.method-head{padding:15px;border-bottom:1px solid var(--line)}.method-head h3{margin:0}.method-head p{margin:2px 0 0;color:var(--muted);font-size:.82rem}.result-list{padding:8px}.result{border:1px solid var(--line);border-radius:11px;padding:10px;margin:7px 0}.result-top{display:flex;justify-content:space-between;gap:10px}.rank{width:27px;height:27px;border-radius:50%;background:#edf1f4;display:grid;place-items:center;font-weight:850;font-size:.76rem}.score{font-weight:850;font-variant-numeric:tabular-nums}.rtitle{font-size:.84rem;margin:5px 0}.explain{border:0;background:transparent;color:#2e5fa8;padding:0;font-size:.78rem;font-weight:800}.explain-area{background:white;color:var(--ink);padding:18px;border-radius:16px;margin-top:15px}.term-table{width:100%;border-collapse:collapse;font-size:.84rem}.term-table th,.term-table td{border-bottom:1px solid var(--line);padding:7px;text-align:left}.term-table th{text-transform:uppercase;color:var(--muted);font-size:.72rem}.formula{background:#f4f6f7;border:1px solid var(--line);border-radius:10px;padding:11px;font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;overflow:auto}.semantic-map{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.concept-chip{padding:9px;border:1px solid var(--line);border-radius:10px;background:#fafafa}.concept-chip strong{display:block}.meter{height:7px;background:#edf0f2;border-radius:999px;overflow:hidden;margin-top:5px}.meter span{display:block;height:100%;background:var(--purple)}
+.generator{margin-top:18px;background:#fff;color:var(--ink);border-radius:18px;overflow:hidden}.generator-head{padding:17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.generator-body{padding:18px}.answer{padding:16px;background:#f8fafb;border:1px solid var(--line);border-radius:13px}.answer p{margin:.35rem 0}.citation{display:inline-block;background:#eaf1f9;color:#20497c;padding:1px 6px;border-radius:6px;font-size:.78rem;font-weight:800}.claim-list{margin-top:14px}.claim{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}.claim-top{display:flex;justify-content:space-between;gap:10px}.status{font-size:.75rem;font-weight:850;padding:3px 8px;border-radius:999px}.supported{background:#e8f5ef;color:#236247}.unsupported{background:#fce8e6;color:#8e302e}.partial{background:#fff6db;color:#795900}.source-snippet{font-size:.84rem;color:var(--muted);padding:8px 10px;background:#f7f8f9;border-radius:9px;margin-top:8px}.warning{padding:13px;background:#fce8e6;border:1px solid #efc1bd;color:#7f2e2b;border-radius:11px}.comparison{margin-top:20px}.comparison-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.comparison-grid>div{padding:15px;background:white;border:1px solid var(--line);border-radius:13px}.comparison-grid strong{display:block;margin-bottom:5px}
+.challenge{display:grid;grid-template-columns:1fr 1fr;gap:15px}.challenge-card{padding:18px;border-radius:16px;border:1px solid var(--line);background:white}.choice{display:flex;gap:7px;flex-wrap:wrap}.choice button{border:1px solid var(--line);background:#fff;padding:7px 10px;border-radius:9px}.choice button:hover{border-color:var(--purple)}.feedback{font-size:.87rem;margin-top:10px}.worksheet{padding:20px}.saved{padding:12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;background:#fafafa}textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:10px;padding:10px;resize:vertical}.references{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.reference-card{padding:16px}.reference-card a{color:#2e5fa8;font-weight:800;text-decoration:none}.footer{padding:30px 0 60px;color:var(--muted);font-size:.84rem}.empty{padding:14px;color:var(--muted)}
+@media(max-width:900px){.hero-grid,.grid3,.results,.comparison-grid,.challenge,.references,.semantic-map{grid-template-columns:1fr}.searchrow{grid-template-columns:1fr}.navlinks{display:none}}
+@media print{.topbar,.hero,.concept-section,.references-section,.search-controls,.btn,.chip,.explain-area,.challenge-section{display:none!important}.lab{background:white;color:black;padding:0;box-shadow:none}.generator{border:1px solid #ddd}.worksheet{box-shadow:none}}
+</style></head><body>
+<header class="topbar"><div class="container nav"><div class="brand"><span class="badge">AI</span> STKI Semantic & AI Lab</div><nav class="navlinks"><a href="#konsep">Konsep</a><a href="#lab">Lab</a><a href="#verify">Verify</a><a href="#worksheet">My Experiment</a></nav></div></header>
+<main>
+<section class="hero"><div class="container hero-grid"><div><div class="kicker">Pertemuan 13 · Semantic & AI-Assisted Retrieval</div><h1>From words.<br>To meaning.<br>To answers.</h1><p>Kemarin kita menilai kualitas hasil retrieval. Hari ini kita bertanya: <strong>bagaimana kalau query dan dokumen memakai kata berbeda tetapi maknanya dekat?</strong> Dan apa yang berubah ketika sistem tidak hanya memberi daftar dokumen, tetapi juga menghasilkan jawaban?</p><div class="btnrow"><a class="btn orange" href="#lab">Mulai lab →</a><a class="btn secondary" href="#konsep">Pahami konsep</a></div></div><aside class="hero-card"><div class="eyebrow">PERTANYAAN BESAR</div><p class="bigq">“Menemukan dokumen dan menghasilkan jawaban — apakah itu pekerjaan yang sama?”</p><div class="note">Tidak. Retrieval memilih evidence. Generative layer menyusun output dari evidence — dan output itu tetap perlu diverifikasi.</div></aside></div></section>
+
+<section id="konsep" class="section concept-section"><div class="container"><h2>Tiga lapisan yang harus dibedakan</h2><p class="section-intro">Bukan “search lama vs search AI”. Kita bedakan apa yang direpresentasikan, apa yang dibandingkan, dan apa yang dihasilkan.</p><div class="grid3">
+<article class="card"><div class="eyebrow">1 · LEXICAL</div><h3>Lexical Retrieval</h3><p class="concept-q">“Term apa yang benar-benar bertemu?”</p><p>Query dan dokumen dibandingkan berdasarkan kata/term setelah preprocessing. Lab memakai TF-IDF sebagai contoh.</p><span class="tag lex">term overlap</span><span class="tag lex">TF-IDF</span></article>
+<article class="card"><div class="eyebrow">2 · SEMANTIC</div><h3>Semantic Retrieval</h3><p class="concept-q">“Apakah maknanya dekat meski katanya berbeda?”</p><p>Sistem nyata biasanya menggunakan learned dense representations/embeddings. Lab ini memakai concept vectors transparan agar mahasiswa bisa membongkar logikanya.</p><span class="tag sem">meaning</span><span class="tag sem">vector similarity</span></article>
+<article class="card"><div class="eyebrow">3 · GENERATIVE</div><h3>AI-Assisted / Generative</h3><p class="concept-q">“Bisakah evidence diubah menjadi jawaban?”</p><p>Retrieval memilih sumber; generative layer menyintesis jawaban. Jawaban yang lancar tetap harus dicek terhadap sumber.</p><span class="tag gen">retrieve</span><span class="tag gen">generate</span><span class="tag gen">verify</span></article>
+</div><div class="flow"><span class="flowbox">Query</span><span class="arrow">→</span><span class="flowbox">Retrieve evidence</span><span class="arrow">→</span><span class="flowbox">Generate answer</span><span class="arrow">→</span><span class="flowbox">Verify claims</span></div><p class="note"><strong>Catatan:</strong> Semantic layer pada web ini adalah simulasi pembelajaran berbasis concept vector, bukan model embedding produksi. Ini sengaja agar hubungan query–concept–document tetap dapat dilihat mahasiswa.</p></div></section>
+
+<section id="lab" class="section"><div class="container"><div class="lab"><div class="kicker" style="color:#ffae6c">INTERACTIVE LAB</div><h2 style="margin-top:4px">Satu query: lexical vs semantic</h2><p class="muted">Gunakan query natural. Contoh terbaik justru query yang tidak memakai kata persis seperti dokumen.</p><div class="search-controls"><div class="searchrow"><input id="query" value="how students judge whether online sources are trustworthy" placeholder="Tulis kebutuhan informasi dengan bahasa natural..."><button id="run" class="btn orange">RUN COMPARISON</button></div><div class="chips"><button class="chip" data-query="how students judge whether online sources are trustworthy">students judge trustworthy sources</button><button class="chip" data-query="where do learners ask for help when academic searching gets difficult">help when searching gets difficult</button><button class="chip" data-query="using chatbots to teach source checking in university libraries">chatbots for source checking</button><button class="chip" data-query="measuring completeness and exactness of search results">completeness and exactness</button></div></div><div id="process" class="process"><span class="muted">Setelah Run, web akan memperlihatkan lexical tokens dan semantic concepts yang terdeteksi.</span></div><div id="results" class="results"><section class="method"><div class="method-head"><h3>Lexical Retrieval</h3><p>TF-IDF · kata/term yang benar-benar bertemu</p></div><div id="lexResults" class="result-list"><div class="empty">Jalankan query.</div></div></section><section class="method"><div class="method-head"><h3>Semantic Retrieval</h3><p>concept vector · cosine similarity</p></div><div id="semResults" class="result-list"><div class="empty">Jalankan query.</div></div></section></div><div id="explainArea" class="explain-area"><h3>Mengapa skornya berbeda?</h3><p class="empty">Klik “Mengapa skor ini?” pada hasil lexical atau semantic.</p></div><div class="explain-area"><h3>Concept map query</h3><p>Ini menunjukkan konsep yang dikenali semantic layer dari bahasa natural query.</p><div id="conceptMap" class="semantic-map"></div></div>
+
+<div class="generator" id="verify"><div class="generator-head"><div><div class="eyebrow">GENERATIVE LAYER</div><h3 style="margin:.15rem 0">Dari hasil retrieval menjadi jawaban</h3></div><button id="toggleRisk" class="btn small secondary">Tampilkan versi berisiko</button></div><div class="generator-body"><p><strong>Evidence yang diambil:</strong> <span id="retrievedForGen">—</span></p><div id="generatedAnswer" class="answer"><p>Jalankan query untuk menghasilkan jawaban pembelajaran.</p></div><div class="warning" style="margin-top:12px">Web ini tidak memanggil LLM. Jawaban disintesis secara deterministik dari corpus untuk mengajarkan alur retrieve → generate → verify.</div><h3>Claim verification</h3><p>Jangan menilai berdasarkan “terdengar meyakinkan”. Cek apakah setiap claim punya evidence.</p><div id="claimList" class="claim-list"></div></div></div></div>
+
+<div class="comparison"><h2 style="font-size:1.65rem;margin-top:25px">Apa yang berubah dari retrieval ke generation?</h2><div id="comparison" class="comparison-grid"><div><strong>Lexical Top-3</strong>—</div><div><strong>Semantic Top-3</strong>—</div><div><strong>Generative layer</strong>—</div></div><div class="btnrow"><button id="saveExperiment" class="btn">Simpan query ke My Experiment</button></div></div></div></section>
+
+<section class="section challenge-section"><div class="container"><h2>Mini concept check</h2><p class="section-intro">Tiga pertanyaan sebelum kita menyebut sesuatu “AI search”.</p><div class="challenge">
+<div class="challenge-card"><strong>1. Query “trustworthy sources” tidak muncul persis di artikel, tetapi artikel membahas source verification/credibility. Metode mana yang dirancang untuk menangkap kedekatan konsep?</strong><div class="choice"><button onclick="challenge(1,'lexical')">Lexical</button><button onclick="challenge(1,'semantic')">Semantic</button></div><div id="fb1" class="feedback"></div></div>
+<div class="challenge-card"><strong>2. Jika generative answer terlihat bagus, apakah retrieval masih penting?</strong><div class="choice"><button onclick="challenge(2,'retrieval')">Ya, evidence tetap penting</button><button onclick="challenge(2,'no')">Tidak, generator sudah cukup</button></div><div id="fb2" class="feedback"></div></div>
+<div class="challenge-card"><strong>3. Jawaban menyebut “akurasi naik 40%”, tetapi tidak ada sumber yang mendukung angka itu. Apa tindakan pertama?</strong><div class="choice"><button onclick="challenge(3,'trust')">Percaya karena jawabannya lancar</button><button onclick="challenge(3,'verify')">Verifikasi claim ke evidence</button></div><div id="fb3" class="feedback"></div></div>
+<div class="challenge-card"><strong>Inti P13</strong><p>Semantic retrieval membantu ketika term berbeda tetapi konsep dekat. Generative retrieval mengubah evidence menjadi jawaban. Keduanya tetap membutuhkan evaluasi dan verifikasi.</p></div>
+</div></div></section>
+
+<section id="worksheet" class="section"><div class="container"><h2>My Experiment</h2><p class="section-intro">Simpan maksimal tiga query yang menunjukkan perbedaan lexical dan semantic ranking.</p><div class="worksheet"><div id="saved"></div><h3>Refleksi</h3><p><strong>1.</strong> Berikan satu contoh mengapa lexical retrieval dapat melewatkan dokumen yang secara makna relevan.</p><textarea id="r1"></textarea><p><strong>2.</strong> Apa beda semantic retrieval dengan generative answer?</p><textarea id="r2"></textarea><p><strong>3.</strong> Mengapa citation/grounding belum otomatis menjamin semua claim benar?</p><textarea id="r3"></textarea><div class="btnrow"><button id="printBtn" class="btn orange">Print / Save PDF</button><button id="clearBtn" class="btn secondary">Reset</button></div></div></div></section>
+
+<section class="section references-section"><div class="container"><h2>Konsep dasar yang menjadi rujukan</h2><p class="section-intro">Bukan untuk dihafalkan mahasiswa; ini pijakan akademik untuk istilah embedding, dense retrieval, dan retrieval-augmented generation.</p><div id="references" class="references"></div></div></section>
+
+<section class="section"><div class="container hero-card"><div class="kicker">JEMBATAN KE P14</div><h2>Search bisa makin “pintar”. Tapi apakah otomatis adil, transparan, aman, dan dapat dipercaya?</h2><p>Setelah memahami lexical, semantic, dan generative retrieval, pertanyaan berikutnya adalah <strong>etika STKI</strong>: bias koleksi/ranking, privasi, transparansi, aksesibilitas, hallucination, dan tanggung jawab profesional informasi.</p></div></section>
+</main><footer class="footer"><div class="container">STKI Semantic & AI Retrieval Lab · Pertemuan 13 · corpus melanjutkan artikel nyata pada P11/P12.</div></footer><script>
+const corpus = [{"id": "D01", "title": "Enhancing Information Literacy through Generative AI in the Library Classroom", "authors": "Denise A. Wetzel; Justin Kani", "year": 2024, "journal": "Pennsylvania Libraries: Research & Practice", "keywords": ["information literacy", "generative AI", "ACRL Framework", "undergraduate students", "library instruction", "critical reading", "source verification"], "summary": "The article examines how a generative AI chatbot can be integrated into undergraduate library instruction. It connects AI-supported learning with information literacy, strategic searching, critical reading, research as inquiry, and verification of information sources.", "url": "https://palrap.org/ojs/palrap/article/view/302"}, {"id": "D02", "title": "Articulating Generative AI Information Literacy Competencies: An ACRL Framework–Driven Model for Academic Libraries", "authors": "Ladislava Khailova; Melissa Netzband Wathen; Melissa S. Jones", "year": 2026, "journal": "Journal of Information Literacy", "keywords": ["generative AI", "information literacy", "academic libraries", "ACRL", "higher education", "library instruction", "prompt engineering", "human evaluation"], "summary": "This project develops generative AI information literacy competencies for academic libraries by aligning emerging AI literacy needs with the ACRL Framework. It emphasizes human oversight, critical evaluation, responsible research practice, instruction, and institutional support.", "url": "https://journals.cilip.org.uk/jil/article/view/883"}, {"id": "D03", "title": "Integrating Generative AI into Librarian-Led Data Literacy Instruction for Science and Engineering Students", "authors": "Alexander J. Carroll; Joshua Borycz; Nicole K. Stephens; Nadia Merritt; Amanda R. Lowery", "year": 2026, "journal": "The Journal of Academic Librarianship", "keywords": ["generative AI", "data literacy", "librarian instruction", "science students", "engineering students", "research data management", "data cleaning"], "summary": "The study evaluates a curriculum-integrated module led by librarians for science and engineering students. Generative AI is used in practical research data management activities, including data cleaning and processing, while data literacy and responsible use remain central.", "url": "https://doi.org/10.1016/j.acalib.2026.103322"}, {"id": "D04", "title": "Integrating Large Language Models and Generative Artificial Intelligence Tools into Information Literacy Instruction", "authors": "Alexander J. Carroll; Joshua Borycz", "year": 2024, "journal": "The Journal of Academic Librarianship", "keywords": ["generative AI", "large language models", "information literacy", "STEM education", "information retrieval", "critical thinking", "library instruction"], "summary": "This study explores student experience with large language models in research tasks and examines how librarian-led information literacy instruction can support responsible use. It discusses information retrieval, knowledge synthesis, critical thinking, and limitations of AI tools.", "url": "https://doi.org/10.1016/j.acalib.2024.102899"}, {"id": "D05", "title": "In Their Words: Student Reflections on Information-Seeking Behaviors", "authors": "Sarah P. C. Dahlen; Kathlene Hanson", "year": 2023, "journal": "The Journal of Academic Librarianship", "keywords": ["information literacy", "information seeking behavior", "search strategies", "students", "source selection", "library search tools"], "summary": "The study analyzes how university students describe their own information seeking. Students completed search tasks and discussed source selection, strategies used when searches fail, search tools, instructor influence, and the decisions they make while looking for academic information.", "url": "https://digitalcommons.csumb.edu/lib_fac/17/"}, {"id": "D06", "title": "MeSH and Text-Word Search Strategies: Precision, Recall, and Their Implications for Library Instruction", "authors": "Michelle M. DeMars; Carol Perruso", "year": 2022, "journal": "Journal of the Medical Library Association", "keywords": ["precision", "recall", "MeSH", "text-word searching", "search strategy", "information literacy", "library instruction", "controlled vocabulary"], "summary": "This study compares MeSH-based and text-word search strategies using precision and recall. It considers controlled vocabulary, retrieval performance, comprehensive searching, and implications for teaching search strategies in information literacy and library instruction.", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8830400/"}, {"id": "D07", "title": "Assessing Information, Media and Data Literacy in Academic Libraries: Approaches and Challenges in the Research Literature on the Topic", "authors": "Maria Pinto; Javier Garcia-Marco; David Caballero; Ramón Manso; Alejandro Uribe; Carmen Gomez", "year": 2024, "journal": "The Journal of Academic Librarianship", "keywords": ["information literacy", "media literacy", "data literacy", "academic libraries", "assessment", "student learning", "evaluation"], "summary": "This review maps approaches for assessing information, media, and data literacy in academic libraries. It examines assessment tools, indicators, methods, student learning, and emerging challenges, including the growing need to address generative AI in literacy programs.", "url": "https://doi.org/10.1016/j.acalib.2024.102920"}, {"id": "D08", "title": "Generative Artificial Intelligence: 8 Critical Questions for Libraries", "authors": "Laurie M. Bridges; Kelly McElroy; Zach Welhouse", "year": 2024, "journal": "Journal of Library Administration", "keywords": ["generative AI", "AI literacy", "critical information literacy", "libraries", "privacy", "access", "intellectual freedom", "responsible use"], "summary": "The article proposes critical questions for libraries responding to generative AI and large language models. It highlights AI literacy, responsible use, privacy, access, intellectual freedom, community implications, and the role of libraries in helping users evaluate new technologies.", "url": "https://www.tandfonline.com/doi/full/10.1080/01930826.2024.2292484"}, {"id": "D09", "title": "Where Students Start and What They Do When They Get Stuck: A Qualitative Inquiry into Academic Information-Seeking and Help-Seeking Practices", "authors": "Susan Thomas; Eamon Tewell; Gloria Willson", "year": 2017, "journal": "The Journal of Academic Librarianship", "keywords": ["students", "information seeking", "help seeking", "academic libraries", "library databases", "research assistance", "search behavior"], "summary": "This qualitative study investigates where students begin academic information seeking and whom they ask for help. It discusses library databases, research assistance, faculty and peer support, awareness of librarians, and student behavior when search processes become difficult.", "url": "https://www.sciencedirect.com/science/article/pii/S0099133316301951"}, {"id": "D10", "title": "Perilaku Mahasiswa dalam Temu Kembali Informasi di Perpustakaan STMIK Pontianak", "authors": "Markus Kapitan; Atiqa Nur Latifa Hanum", "year": 2019, "journal": "Jurnal Pendidikan dan Pembelajaran Khatulistiwa", "keywords": ["perilaku mahasiswa", "temu kembali informasi", "information retrieval", "information seeking behavior", "perpustakaan", "kendala pencarian"], "summary": "Penelitian ini mendeskripsikan perilaku mahasiswa ketika melakukan temu kembali informasi di perpustakaan STMIK Pontianak. Fokusnya mencakup kebutuhan informasi, perilaku pencarian, penggunaan fasilitas perpustakaan, tahapan pencarian, dan kendala yang dialami pengguna ketika mencari informasi.", "url": "https://jurnal.untan.ac.id/index.php/jpdpb/article/view/31111"}, {"id": "D11", "title": "The AI Literacy Heptagon: A Structured Approach to AI Literacy in Higher Education", "authors": "Veronika Hackl; Alexandra Elena Müller; Maximilian Sailer", "year": 2026, "journal": "Computers and Education: Artificial Intelligence", "keywords": ["AI literacy", "higher education", "artificial intelligence", "students", "education", "critical evaluation", "AI competencies"], "summary": "This integrative review proposes a seven-dimensional framework for AI literacy in higher education. It organizes recurring and emerging AI literacy dimensions and distinguishes AI literacy from related media, computational, and data literacy while supporting critical and informed engagement.", "url": "https://doi.org/10.1016/j.caeai.2026.100540"}, {"id": "D12", "title": "Shifting Understandings of Information Literacy in the Age of Generative AI: Insights From LIS Students", "authors": "Kay Oddone; Tabitha Merrell; Elizabeth Tait; Bethany Phillips-Peddlesden", "year": 2026, "journal": "Journal of the Australian Library and Information Association", "keywords": ["information literacy", "generative AI", "LIS students", "critical evaluation", "search strategies", "professional practice", "ethical information use"], "summary": "This study examines how Library and Information Studies students understand information literacy in the context of generative AI. It highlights searching, evaluation, verification, ethical information practice, professional preparation, and perceived overlap between established information literacy and AI-related skills.", "url": "https://www.tandfonline.com/doi/full/10.1080/24750158.2026.2712033"}];
+const references = [{"title": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks", "note": "Contoh learned sentence embeddings untuk semantic similarity.", "url": "https://aclanthology.org/D19-1410/"}, {"title": "Dense Passage Retrieval for Open-Domain Question Answering", "note": "Contoh dense retrieval dengan learned representations untuk passage retrieval.", "url": "https://aclanthology.org/2020.emnlp-main.550/"}, {"title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", "note": "Paper klasik RAG: retrieval digabung dengan model generatif.", "url": "https://papers.nips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html"}];
+
+// -------------------------
+// 1) Lexical preprocessing
+// -------------------------
+const stopwords = new Set(["a","an","and","are","as","at","be","by","for","from","has","have","how","in","into","is","it","of","on","or","that","the","their","this","to","use","using","what","when","where","which","who","with","whether","do","does","can","about","online"]);
+const normMap={"students":"student","undergraduate":"student","undergraduates":"student","learners":"student","libraries":"library","librarians":"librarian","strategies":"strategy","searching":"search","searches":"search","sources":"source","tools":"tool","models":"model","evaluating":"evaluate","evaluation":"evaluate","evaluates":"evaluate","verification":"verify","verifying":"verify","assessing":"assess","assessment":"assess","behaviors":"behavior","behaviours":"behavior","practices":"practice","skills":"skill","competencies":"competency"};
+function tokenize(text){return (text.toLowerCase().match(/[a-z0-9À-ÿ]+/g)||[])}
+function preprocess(text){return tokenize(text).filter(t=>!stopwords.has(t)).map(t=>normMap[t]||t)}
+function docText(d){return [d.title,d.keywords.join(' '),d.summary].join(' ')}
+const processedDocs=Object.fromEntries(corpus.map(d=>[d.id,preprocess(docText(d))]));
+const N=corpus.length;
+function counts(tokens){const c={};tokens.forEach(t=>c[t]=(c[t]||0)+1);return c}
+const docCounts=Object.fromEntries(Object.entries(processedDocs).map(([id,t])=>[id,counts(t)]));
+const vocab=[...new Set(Object.values(processedDocs).flat())];
+const df={};vocab.forEach(t=>df[t]=Object.values(processedDocs).filter(ds=>ds.includes(t)).length);
+function idf(t){return df[t]?Math.log10(N/df[t]):0}
+function lexicalSearch(query){
+  const q=[...new Set(preprocess(query))];
+  const ranking=corpus.map(d=>{
+    const terms=q.map(term=>{const tf=docCounts[d.id][term]||0;const idfv=idf(term);return {term,tf,df:df[term]||0,idf:idfv,w:tf*idfv}});
+    return {id:d.id,score:terms.reduce((s,x)=>s+x.w,0),terms};
+  }).sort((a,b)=>b.score-a.score||a.id.localeCompare(b.id));
+  return {q,ranking};
+}
+
+// --------------------------------------------------------
+// 2) Transparent teaching semantic layer (concept vectors)
+// --------------------------------------------------------
+// IMPORTANT: this is deliberately interpretable. Production semantic retrieval usually uses learned dense embeddings.
+const concepts={
+  student:["student","undergraduate","learner","students","lis students"],
+  information_literacy:["information literacy","critical information literacy","source literacy","media literacy"],
+  search_retrieval:["search","searching","information seeking","information-seeking","retrieval","find","finding","database"],
+  evaluation:["evaluate","evaluation","assess","assessment","judge","judging","verify","verification","critical reading","source selection"],
+  credibility:["credibility","credible","trustworthy","reliable","source verification","source checking","quality of source"],
+  generative_ai:["generative ai","genai","large language model","large language models","llm","chatbot","chatbots","artificial intelligence"],
+  library:["library","libraries","librarian","librarians","academic libraries","library instruction"],
+  education:["instruction","teaching","education","learning","classroom","curriculum","training"],
+  ethics:["ethical","ethics","privacy","responsible use","intellectual freedom","human oversight"],
+  data_literacy:["data literacy","research data","data management","data cleaning"],
+  help_seeking:["help seeking","help-seeking","research assistance","ask for help","support"],
+  evaluation_metrics:["precision","recall","retrieval performance","comprehensive searching","controlled vocabulary"],
+  academic_writing:["academic writing","research writing","writing"],
+  ai_literacy:["ai literacy","artificial intelligence literacy","ai competencies","prompt engineering"]
+};
+const conceptNames=Object.keys(concepts);
+function conceptVector(text){
+  const s=' '+text.toLowerCase().replace(/[^a-z0-9À-ÿ -]+/g,' ')+' ';
+  return conceptNames.map(c=>{
+    let score=0;
+    concepts[c].forEach(phrase=>{
+      const p=phrase.toLowerCase();
+      if(s.includes(' '+p+' ') || s.includes(p)) score+=phrase.includes(' ')?1.4:1;
+    });
+    return Math.min(score,4);
+  });
+}
+const docConceptVectors=Object.fromEntries(corpus.map(d=>[d.id,conceptVector(docText(d))]));
+function dot(a,b){return a.reduce((s,x,i)=>s+x*b[i],0)}
+function norm(v){return Math.sqrt(dot(v,v))}
+function cosine(a,b){const den=norm(a)*norm(b);return den?dot(a,b)/den:0}
+function semanticSearch(query){
+  const qv=conceptVector(query);
+  const ranking=corpus.map(d=>({id:d.id,score:cosine(qv,docConceptVectors[d.id]),vector:docConceptVectors[d.id],qvector:qv})).sort((a,b)=>b.score-a.score||a.id.localeCompare(b.id));
+  return {qvector:qv,ranking};
+}
+function getDoc(id){return corpus.find(d=>d.id===id)}
+
+// -------------------------
+// 3) Guided answer synthesis
+// -------------------------
+function activeConcepts(v){return conceptNames.map((c,i)=>({c,v:v[i]})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v)}
+function groundedClaims(query, semantic){
+  const qConcepts=new Set(activeConcepts(semantic.qvector).map(x=>x.c));
+  const top=semantic.ranking.filter(x=>x.score>0).slice(0,3).map(x=>getDoc(x.id));
+  const claims=[];
+  if(qConcepts.has('student') && (qConcepts.has('evaluation')||qConcepts.has('credibility'))){
+    const supports=top.filter(d=>['D01','D05','D12','D07'].includes(d.id)).map(d=>d.id).slice(0,3);
+    claims.push({text:'Dalam corpus ini, evaluasi informasi oleh mahasiswa terkait dengan pemilihan sumber, verifikasi, dan keterampilan literasi informasi.',support:supports.length?supports:top.slice(0,2).map(d=>d.id),status:'supported'});
+  }
+  if(qConcepts.has('generative_ai')){
+    const supports=top.filter(d=>['D01','D02','D03','D04','D08','D12'].includes(d.id)).map(d=>d.id).slice(0,3);
+    claims.push({text:'Artikel yang ditemukan menempatkan penggunaan generative AI bersama kebutuhan akan evaluasi kritis, literasi, atau penggunaan yang bertanggung jawab.',support:supports.length?supports:top.slice(0,2).map(d=>d.id),status:'supported'});
+  }
+  if(qConcepts.has('search_retrieval')){
+    const supports=top.filter(d=>['D05','D06','D09','D10'].includes(d.id)).map(d=>d.id).slice(0,3);
+    claims.push({text:'Strategi pencarian dan perilaku information seeking berpengaruh pada bagaimana pengguna menemukan, memilih, atau meminta bantuan ketika mencari informasi.',support:supports.length?supports:top.slice(0,2).map(d=>d.id),status:'supported'});
+  }
+  if(qConcepts.has('evaluation_metrics')){
+    const supports=top.filter(d=>d.id==='D06').map(d=>d.id);
+    claims.push({text:'Precision dan recall dapat digunakan untuk melihat aspek yang berbeda dari performa retrieval dan memiliki implikasi pada strategi pencarian.',support:supports.length?supports:top.slice(0,1).map(d=>d.id),status:'supported'});
+  }
+  if(!claims.length){
+    top.slice(0,2).forEach(d=>claims.push({text:`${d.title} merupakan salah satu sumber yang paling dekat dengan konsep query pada semantic layer lab ini.`,support:[d.id],status:'supported'}));
+  }
+  return {claims,top};
+}
+function answerHtml(claims){
+  return claims.map(c=>`<p>${c.text} ${c.support.map(x=>`<span class="citation">${x}</span>`).join(' ')}</p>`).join('');
+}
+function riskyClaims(base){
+  return [...base,{text:'Program AI literacy dalam corpus ini terbukti meningkatkan akurasi evaluasi sumber mahasiswa sebesar 40%.',support:[],status:'unsupported'}];
+}
+
+// -------------------------
+// UI
+// -------------------------
+const refsBox=document.getElementById('references');
+refsBox.innerHTML=references.map(r=>`<article class="reference-card"><strong>${r.title}</strong><p>${r.note}</p><a href="${r.url}" target="_blank" rel="noopener">Buka paper ↗</a></article>`).join('');
+document.querySelectorAll('[data-query]').forEach(b=>b.onclick=()=>document.getElementById('query').value=b.dataset.query);
+let latest=null;let risky=false;
+document.getElementById('run').onclick=run;
+document.getElementById('query').addEventListener('keydown',e=>{if(e.key==='Enter')run()});
+document.getElementById('toggleRisk').onclick=()=>{if(!latest)return;risky=!risky;renderGenerator()};
+
+function run(){
+  const query=document.getElementById('query').value.trim(); if(!query){alert('Masukkan query dulu.');return}
+  const lexical=lexicalSearch(query), semantic=semanticSearch(query), gen=groundedClaims(query,semantic);
+  latest={query,lexical,semantic,gen};risky=false;
+  renderQuery();renderResults();renderConceptMap();renderGenerator();renderComparison();
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderQuery(){
+  const lex=preprocess(latest.query);const sem=activeConcepts(latest.semantic.qvector);
+  document.getElementById('process').innerHTML=`<strong>Query asli:</strong> ${latest.query}<br><br><strong>Lexical tokens:</strong> ${lex.map(x=>`<span class="tag lex">${x}</span>`).join(' ')||'—'}<br><strong>Semantic concepts:</strong> ${sem.map(x=>`<span class="tag sem">${x.c.replaceAll('_',' ')}</span>`).join(' ')||'tidak ada concept mapping'}`;
+}
+function resultCard(r,model){const d=getDoc(r.id);return `<div class="result"><div class="result-top"><strong>${r.id}</strong><span class="score">${r.score.toFixed(4)}</span></div><div class="rtitle">${d.title}</div><button class="explain" onclick="explain('${model}','${r.id}')">Mengapa skor ini? →</button></div>`}
+function renderResults(){
+  document.getElementById('lexResults').innerHTML=latest.lexical.ranking.slice(0,6).map(r=>resultCard(r,'lex')).join('');
+  document.getElementById('semResults').innerHTML=latest.semantic.ranking.slice(0,6).map(r=>resultCard(r,'sem')).join('');
+}
+window.explain=function(model,id){
+  const box=document.getElementById('explainArea'),d=getDoc(id);
+  if(model==='lex'){
+    const r=latest.lexical.ranking.find(x=>x.id===id);
+    box.innerHTML=`<h3>${id} — Lexical TF-IDF</h3><p><strong>${d.title}</strong></p><table class="term-table"><thead><tr><th>Term query</th><th>TF</th><th>DF</th><th>IDF</th><th>TF×IDF</th></tr></thead><tbody>${r.terms.map(t=>`<tr><td>${t.term}</td><td>${t.tf}</td><td>${t.df}/${N}</td><td>${t.idf.toFixed(3)}</td><td>${t.w.toFixed(3)}</td></tr>`).join('')}</tbody></table><div class="formula">Total lexical score = ${r.score.toFixed(4)}</div><div class="note">Lexical retrieval bergantung pada term yang benar-benar muncul setelah preprocessing. Sinonim yang tidak dipetakan sebagai term sama dapat terlewat.</div>`;
+  }else{
+    const r=latest.semantic.ranking.find(x=>x.id===id);
+    const rows=conceptNames.map((c,i)=>({c,q:r.qvector[i],d:r.vector[i],prod:r.qvector[i]*r.vector[i]})).filter(x=>x.q>0||x.d>0);
+    box.innerHTML=`<h3>${id} — Semantic concept vector</h3><p><strong>${d.title}</strong></p><table class="term-table"><thead><tr><th>Concept</th><th>Query</th><th>Document</th><th>q×d</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${x.c.replaceAll('_',' ')}</td><td>${x.q.toFixed(1)}</td><td>${x.d.toFixed(1)}</td><td>${x.prod.toFixed(2)}</td></tr>`).join('')}</tbody></table><div class="formula">cosine(concept query, concept document) = ${r.score.toFixed(4)}</div><div class="note"><strong>Teaching simulation:</strong> semantic layer web ini memakai concept vectors yang transparan agar perhitungan dapat dibongkar. Sistem semantic search nyata biasanya memakai learned dense embeddings.</div>`;
+  }
+  box.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderConceptMap(){
+  const active=activeConcepts(latest.semantic.qvector);
+  document.getElementById('conceptMap').innerHTML=active.length?active.map(x=>`<div class="concept-chip"><strong>${x.c.replaceAll('_',' ')}</strong><span>weight ${x.v.toFixed(1)}</span><div class="meter"><span style="width:${Math.min(100,x.v/4*100)}%"></span></div></div>`).join(''):'<div class="empty">Query belum memetakan ke concept layer. Coba query contoh.</div>';
+}
+function renderGenerator(){
+  if(!latest)return; const claims=risky?riskyClaims(latest.gen.claims):latest.gen.claims;
+  document.getElementById('toggleRisk').textContent=risky?'Kembali ke grounded answer':'Tampilkan versi berisiko';
+  document.getElementById('generatedAnswer').innerHTML=answerHtml(claims);
+  document.getElementById('claimList').innerHTML=claims.map((c,i)=>{
+    const cls=c.status==='supported'?'supported':'unsupported'; const label=c.status==='supported'?'SUPPORTED':'UNSUPPORTED';
+    const snippets=c.support.map(id=>{const d=getDoc(id);return `<div class="source-snippet"><strong>${id}</strong> — ${d.summary}</div>`}).join('');
+    return `<div class="claim"><div class="claim-top"><strong>Claim ${i+1}</strong><span class="status ${cls}">${label}</span></div><p>${c.text}</p>${snippets||'<div class="warning">Tidak ada dokumen corpus yang mendukung angka/klaim ini.</div>'}</div>`;
+  }).join('');
+  document.getElementById('retrievedForGen').innerHTML=latest.gen.top.map(d=>`<span class="tag">${d.id}</span>`).join(' ');
+}
+function renderComparison(){
+  const l=latest.lexical.ranking.slice(0,3).map(x=>x.id).join(' → '),s=latest.semantic.ranking.slice(0,3).map(x=>x.id).join(' → ');
+  document.getElementById('comparison').innerHTML=`<div><strong>Lexical Top-3</strong>${l}<br><small>term overlap + TF-IDF</small></div><div><strong>Semantic Top-3</strong>${s}<br><small>concept similarity</small></div><div><strong>Generative layer</strong>mengubah hasil retrieval menjadi jawaban tersintesis<br><small>tetap harus diverifikasi terhadap evidence</small></div>`;
+}
+
+// Challenge
+window.challenge=function(n,choice){
+  const box=document.getElementById('fb'+n);
+  const correct={1:'semantic',2:'retrieval',3:'verify'}[n];
+  const msgs={
+    1:'Query dan dokumen dapat memakai kata berbeda tetapi konsepnya dekat; semantic retrieval dirancang untuk menangkap kedekatan representasi makna.',
+    2:'RAG/generative retrieval tetap membutuhkan retrieval yang baik. Generator tidak “menghapus” pentingnya sumber; ia justru bergantung pada evidence yang berhasil diambil.',
+    3:'Jawaban yang lancar belum membuktikan klaimnya benar. Periksa apakah claim benar-benar didukung dokumen yang dirujuk.'
+  };
+  box.innerHTML=(choice===correct?'✅ ':'❌ ')+msgs[n];
+}
+
+// Save experiment
+function loadExp(){return JSON.parse(localStorage.getItem('p13exp')||'[]')}
+function saveExp(x){localStorage.setItem('p13exp',JSON.stringify(x));renderSaved()}
+document.getElementById('saveExperiment').onclick=()=>{
+  if(!latest){alert('Jalankan query dulu.');return}const a=loadExp();if(a.length>=3){alert('Maksimal 3 query.');return}
+  a.push({q:latest.query,lex:latest.lexical.ranking.slice(0,3).map(x=>x.id).join(' → '),sem:latest.semantic.ranking.slice(0,3).map(x=>x.id).join(' → ')});saveExp(a)
+};
+function renderSaved(){const a=loadExp();document.getElementById('saved').innerHTML=a.length?a.map((x,i)=>`<div class="saved"><strong>${i+1}. ${x.q}</strong><br>Lexical: ${x.lex}<br>Semantic: ${x.sem}<br><button class="explain" onclick="removeExp(${i})">hapus</button></div>`).join(''):'<div class="empty">Belum ada eksperimen tersimpan.</div>'}
+window.removeExp=i=>{const a=loadExp();a.splice(i,1);saveExp(a)};renderSaved();
+['r1','r2','r3'].forEach(id=>{const e=document.getElementById(id);e.value=localStorage.getItem(id)||'';e.oninput=()=>localStorage.setItem(id,e.value)});
+document.getElementById('printBtn').onclick=()=>window.print();
+document.getElementById('clearBtn').onclick=()=>{if(confirm('Hapus eksperimen dan refleksi?')){localStorage.removeItem('p13exp');['r1','r2','r3'].forEach(id=>{localStorage.removeItem(id);document.getElementById(id).value=''});renderSaved()}};
+</script></body></html>
